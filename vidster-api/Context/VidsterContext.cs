@@ -240,8 +240,7 @@ public partial class VidsterContext : DbContext
             
             entity.HasOne(e => e.Creator)
                 .WithMany(e => e.ServiceOfCreator)
-                .HasForeignKey(e => e.CreatorId)
-                .HasConstraintName("creator_id");
+                .HasForeignKey(e => e.CreatorId);
         });
 
         OnModelCreatingPartial(modelBuilder);
