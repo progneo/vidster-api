@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using vidster_api.Models;
@@ -31,6 +31,10 @@ public partial class VidsterContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Work> Works { get; set; }
+    
+    public virtual DbSet<Service> Services { get; set; }
+    
+    public virtual DbSet<ServiceOfCreator> ServicesOfCreator { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -109,7 +113,7 @@ public partial class VidsterContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnName("updated_at");
-            
+
             entity.HasOne(d => d.Creator).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.CreatorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -202,6 +206,42 @@ public partial class VidsterContext : DbContext
                 .HasForeignKey(d => d.CreatorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("work_creator_id_fk");
+        });
+
+        modelBuilder.Entity<Service>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("service_pk");
+
+            entity.ToTable("service");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasColumnType("character varying")
+                .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<ServiceOfCreator>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("service_of_creator_pk");
+
+            entity.ToTable("service_of_creator");
+            
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Price)
+                .HasColumnName("price");
+            entity.Property(e => e.ServiceId)
+                .HasColumnName("service_id");
+            entity.Property(e => e.CreatorId)
+                .HasColumnName("creator_id");
+            
+            entity.HasOne(e => e.Creator)
+                .WithMany(e => e.ServiceOfCreator)
+                .HasForeignKey(e => e.CreatorId)
+                .HasConstraintName("creator_id");
         });
 
         OnModelCreatingPartial(modelBuilder);

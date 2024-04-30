@@ -30,4 +30,6 @@ public partial class Creator
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
     
     public virtual ICollection<TagInCreator> TagsInCreator { get; set; } = new List<TagInCreator>();
+    
+    public virtual ICollection<ServiceOfCreator> ServiceOfCreator { get; set; } = new List<ServiceOfCreator>();
 }

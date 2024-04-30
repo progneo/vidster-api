@@ -89,6 +89,8 @@ namespace vidster_api.Controllers
                 .Include(c => c.TagsInCreator)
                 .ThenInclude(t => t.Tag)
                 .Include(c => c.Reviews)
+                .Include(c => c.ServiceOfCreator)
+                .ThenInclude(s => s.Service)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (creator == null)
@@ -109,6 +111,8 @@ namespace vidster_api.Controllers
                 .Include(c => c.TagsInCreator)
                 .ThenInclude(t => t.Tag)
                 .Include(c => c.Reviews)
+                .Include(c => c.ServiceOfCreator)
+                .ThenInclude(s => s.Service)
                 .FirstOrDefaultAsync(c => c.UserId == id);
 
             if (creator == null)
@@ -150,7 +154,7 @@ namespace vidster_api.Controllers
 
             context.Entry(userCreator).State = EntityState.Modified;
             await context.SaveChangesAsync();
-            
+
             foreach (var tagId in creator.Tags)
             {
                 var newTagInCreator = new TagInCreator
@@ -212,7 +216,6 @@ namespace vidster_api.Controllers
         }
 
         // DELETE: api/Creators/5
-        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -230,11 +233,6 @@ namespace vidster_api.Controllers
             await context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool CreatorExists(int id)
-        {
-            return context.Creators.Any(e => e.Id == id);
         }
     }
 }
