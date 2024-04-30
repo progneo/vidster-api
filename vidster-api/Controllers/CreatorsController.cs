@@ -37,7 +37,7 @@ namespace vidster_api.Controllers
 
             query = filter.SortBy.ToLower() switch
             {
-                "rating" => query.OrderByDescending(c => c.Reviews.Average(r => r.Rating)),
+                "rating" => query.OrderByDescending(c => c.Reviews.Count != 0 ? c.Reviews.Average(r => r.Rating) : 0),
                 "date" => query.OrderByDescending(c => c.CreatedAt),
                 _ => query.OrderBy(c => c.Username)
             };
